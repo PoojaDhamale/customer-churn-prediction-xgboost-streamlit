@@ -112,13 +112,68 @@ section[data-testid="stSidebar"] .stRadio > div [data-testid="stMarkdownContaine
 .pipe-step .name { font-size:.85rem; font-weight:600; color:var(--text); margin-top:2px; }
 .pipe-arrow { font-size:1.2rem; color:var(--muted); margin:0 4px; }
 
-/* ── Inputs ── */
-div[data-baseweb="input"], div[data-baseweb="select"], .stSelectbox > div,
-.stNumberInput > div > div { background:#1A1A1A !important; border:1px solid var(--border) !important; border-radius:10px !important; }
-input, select, textarea { color:var(--text) !important; }
-div[role="listbox"] { background:#1A1A1A !important; }
-div[role="option"]:hover { background:var(--gold) !important; color:#000 !important; }
-label { color:var(--muted) !important; font-weight:500 !important; }
+/* ── Inputs — FIXED for dark theme visibility ── */
+
+/* Outer baseweb wrappers */
+div[data-baseweb="input"] > div,
+div[data-baseweb="select"] > div,
+div[data-baseweb="textarea"] > div {
+    background: #1A1A1A !important;
+    border: 1px solid rgba(255,255,255,.07) !important;
+    border-radius: 10px !important;
+}
+
+/* Number input inner wrapper */
+.stNumberInput div[data-baseweb="input"] {
+    background: #1A1A1A !important;
+}
+
+/* The actual input element */
+input[type="number"],
+input[type="text"],
+input[type="search"],
+input {
+    background: #1A1A1A !important;
+    color: #F1F5F9 !important;
+    caret-color: #FBBF24 !important;
+}
+
+/* Placeholder text — visible but muted */
+input::placeholder,
+textarea::placeholder {
+    color: #64748B !important;
+    opacity: 1 !important;
+}
+
+/* Select boxes */
+.stSelectbox > div > div,
+div[data-baseweb="select"] > div > div {
+    background: #1A1A1A !important;
+    color: #F1F5F9 !important;
+}
+
+/* Dropdown option list */
+ul[data-testid="stSelectboxVirtualDropdown"],
+div[role="listbox"] {
+    background: #1A1A1A !important;
+}
+
+div[role="option"] {
+    color: #CBD5E1 !important;
+}
+
+div[role="option"]:hover {
+    background: #FBBF24 !important;
+    color: #000 !important;
+}
+
+/* Labels */
+label,
+.stSelectbox label,
+.stNumberInput label {
+    color: #94A3B8 !important;
+    font-weight: 500 !important;
+}
 
 /* ── Button ── */
 .stButton>button {
@@ -143,6 +198,7 @@ a { color:var(--gold) !important; }
 .footer { text-align:center; padding:30px 0 10px 0; color:var(--muted); font-size:.8rem; border-top:1px solid var(--border); margin-top:40px; }
 </style>
 """, unsafe_allow_html=True)
+
 
 # ──────────────────────────────────────────────────────────────
 # DATA LOADING
