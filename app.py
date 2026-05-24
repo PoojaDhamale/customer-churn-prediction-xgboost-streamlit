@@ -226,7 +226,7 @@ if section == "🏠 Project Overview":
         ("✅", "Retained", f"{retained:,}", f"{100-churn_rate:.1f}% retained"),
         ("🎯", "Model Recall", "90.3%", "Churn class (threshold 0.3)"),
     ]
-    for col, (icon, label, value, sub) in zip([c1,c2,c3,c4], kpis):
+    for col, (icon, label, value, sub) in zip([c1, c2, c3, c4], kpis):
         with col:
             st.markdown(f"""
             <div class="kpi-card">
@@ -367,14 +367,13 @@ elif section == "📊 EDA & Insights":
     st.markdown('<div class="section-header"><span>📈</span> Churn Rate Breakdown</div>', unsafe_allow_html=True)
     cr_gender = df.groupby("Gender")["Churn"].mean() * 100
     cr_active = df.groupby("Is_Active_Member")["Churn"].mean() * 100
-    cr_state = df.groupby("State")["Churn"].mean() * 100
 
     cols = st.columns(4)
     rate_data = [
-        ("♀️ Female", f"{cr_gender.get('Female',0):.1f}%"),
-        ("♂️ Male", f"{cr_gender.get('Male',0):.1f}%"),
-        ("🟢 Active", f"{cr_active.get(1,0):.1f}%"),
-        ("🔴 Inactive", f"{cr_active.get(0,0):.1f}%"),
+        ("♀️ Female", f"{cr_gender.get('Female', 0):.1f}%"),
+        ("♂️ Male", f"{cr_gender.get('Male', 0):.1f}%"),
+        ("🟢 Active", f"{cr_active.get(1, 0):.1f}%"),
+        ("🔴 Inactive", f"{cr_active.get(0, 0):.1f}%"),
     ]
     for col, (lbl, val) in zip(cols, rate_data):
         with col:
@@ -420,78 +419,150 @@ elif section == "⚙️ ML Pipeline":
 
     # Model Comparison
     st.markdown('<div class="section-header"><span>🤖</span> Model Comparison</div>', unsafe_allow_html=True)
+
     mc1, mc2 = st.columns(2)
+
     with mc1:
         st.markdown("""
         <div class="glass-card" style="border-left:3px solid #64748B;">
             <h4 style="margin-top:0;">🌲 Random Forest <span class="tag tag-gold" style="font-size:.65rem;">BASELINE</span></h4>
             <p style="color:#94A3B8;font-size:.85rem;">n_estimators=200, random_state=42</p>
             <div class="metric-row">
-                <div class="metric-badge"><span class="label">Accuracy</span><span class="value">~85%</span></div>
-                <div class="metric-badge"><span class="label">Recall</span><span class="value">~65%</span></div>
+                <div class="metric-badge">
+                    <span class="label">Accuracy</span>
+                    <span class="value">64.72%</span>
+                </div>
+                <div class="metric-badge">
+                    <span class="label">Recall</span>
+                    <span class="value">36%</span>
+                </div>
             </div>
-            <p style="color:#94A3B8;font-size:.82rem;margin-bottom:0;">⚠️ Missed ~35% of actual churners</p>
+            <div class="metric-row" style="margin-top:10px;">
+                <div class="metric-badge">
+                    <span class="label">Precision</span>
+                    <span class="value">55%</span>
+                </div>
+                <div class="metric-badge">
+                    <span class="label">F1-Score</span>
+                    <span class="value">44%</span>
+                </div>
+            </div>
+            <p style="color:#F87171;font-size:.82rem;margin-bottom:0;">
+                ⚠️ Missed 4,828 actual churn customers (High False Negatives)
+            </p>
         </div>
         """, unsafe_allow_html=True)
 
     with mc2:
         st.markdown("""
         <div class="glass-card" style="border-left:3px solid #FBBF24;">
-            <h4 style="margin-top:0;">⚡ XGBoost <span class="tag tag-green" style="font-size:.65rem;">SELECTED</span></h4>
-            <p style="color:#94A3B8;font-size:.85rem;">Tuned via RandomizedSearchCV (30 iter, 3-fold CV, scoring=recall)</p>
+            <h4 style="margin-top:0;">⚡ XGBoost <span class="tag tag-green" style="font-size:.65rem;">FINAL SELECTED MODEL</span></h4>
+            <p style="color:#94A3B8;font-size:.85rem;">
+                Hyperparameter Tuned using RandomizedSearchCV<br>
+                Optimized for Recall (Business Objective)
+            </p>
             <div class="metric-row">
-                <div class="metric-badge"><span class="label">Recall</span><span class="value" style="color:#34D399;">90.3%</span></div>
-                <div class="metric-badge"><span class="label">Precision</span><span class="value">42.2%</span></div>
-                <div class="metric-badge"><span class="label">Threshold</span><span class="value">0.30</span></div>
+                <div class="metric-badge">
+                    <span class="label">Recall</span>
+                    <span class="value" style="color:#34D399;">90%</span>
+                </div>
+                <div class="metric-badge">
+                    <span class="label">Precision</span>
+                    <span class="value">42%</span>
+                </div>
             </div>
-            <p style="color:#34D399;font-size:.82rem;margin-bottom:0;">✅ Catches 9 out of 10 churners</p>
+            <div class="metric-row" style="margin-top:10px;">
+                <div class="metric-badge">
+                    <span class="label">Accuracy</span>
+                    <span class="value">49.47%</span>
+                </div>
+                <div class="metric-badge">
+                    <span class="label">F1-Score</span>
+                    <span class="value">58%</span>
+                </div>
+            </div>
+            <p style="color:#34D399;font-size:.82rem;margin-bottom:0;">
+                ✅ Successfully detected 6,845 out of 7,578 churn customers
+            </p>
         </div>
         """, unsafe_allow_html=True)
 
     # Confusion Matrix + Feature Importance
     fi_left, fi_right = st.columns(2)
+
     with fi_left:
-        st.markdown('<div class="section-header" style="font-size:1.2rem;"><span>🧮</span> Confusion Matrix</div>', unsafe_allow_html=True)
-        cm = np.array([[3049, 9373], [733, 6845]])
+        st.markdown(
+            '<div class="section-header" style="font-size:1.2rem;"><span>🧮</span> Confusion Matrix (Final XGBoost)</div>',
+            unsafe_allow_html=True
+        )
+
+        cm = np.array([
+            [3049, 9373],
+            [733,  6845]
+        ])
+
         fig = go.Figure(data=go.Heatmap(
-            z=cm, x=["Predicted Retained", "Predicted Churned"],
+            z=cm,
+            x=["Predicted Retained", "Predicted Churned"],
             y=["Actually Retained", "Actually Churned"],
             text=[[f"{v:,}" for v in row] for row in cm],
-            texttemplate="%{text}", textfont=dict(size=16, color="white"),
-            colorscale=[[0, "#1a1a2e"], [1, "#FBBF24"]], showscale=False
+            texttemplate="%{text}",
+            textfont=dict(size=16, color="white"),
+            colorscale=[[0, "#1a1a2e"], [1, "#FBBF24"]],
+            showscale=False
         ))
         fig.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
             font=dict(color="#CBD5E1", family="Inter"),
-            margin=dict(t=20, b=20, l=20, r=20), height=350,
-            xaxis=dict(side="bottom"), yaxis=dict(autorange="reversed")
+            margin=dict(t=20, b=20, l=20, r=20),
+            height=350,
+            xaxis=dict(side="bottom"),
+            yaxis=dict(autorange="reversed")
         )
         st.plotly_chart(fig, use_container_width=True)
 
     with fi_right:
-        st.markdown('<div class="section-header" style="font-size:1.2rem;"><span>📊</span> Feature Importance (Top 10)</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="section-header" style="font-size:1.2rem;"><span>📊</span> Feature Importance (Top 10)</div>',
+            unsafe_allow_html=True
+        )
+
         importances = model.feature_importances_
         fi_df = pd.DataFrame({"Feature": feature_names, "Importance": importances})
         fi_df = fi_df.sort_values("Importance", ascending=True).tail(10)
-        fig = px.bar(fi_df, x="Importance", y="Feature", orientation="h",
-                     color="Importance", color_continuous_scale=["#334155", "#FBBF24"])
+
+        fig = px.bar(
+            fi_df, x="Importance", y="Feature", orientation="h",
+            color="Importance", color_continuous_scale=["#334155", "#FBBF24"]
+        )
         fig.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
             font=dict(color="#CBD5E1", family="Inter"),
-            margin=dict(t=20, b=20, l=20, r=20), height=350,
-            showlegend=False, coloraxis_showscale=False
+            margin=dict(t=20, b=20, l=20, r=20),
+            height=350,
+            showlegend=False,
+            coloraxis_showscale=False
         )
         st.plotly_chart(fig, use_container_width=True)
 
-    # Key insight
+    # Key Business Insight
     st.markdown("""
     <div class="glass-card" style="border-left:3px solid #34D399;">
-        <h4 style="color:#34D399 !important;margin-top:0;">💡 Why Low Accuracy is Acceptable</h4>
+        <h4 style="color:#34D399 !important;margin-top:0;">💡 Business-Oriented Model Selection</h4>
         <p style="color:#CBD5E1;margin-bottom:0;line-height:1.7;">
-        The model uses a <b>lowered threshold (0.3)</b> to maximize <b>Recall</b> — the business priority
-        is to catch as many potential churners as possible, even at the cost of some false positives.
-        Missing a churner (False Negative) is far more expensive than flagging a loyal customer for a
-        retention check (False Positive). This is a deliberate, business-aligned design choice.
+        The final XGBoost model was intentionally optimized for
+        <b>high Recall (90%)</b> because the primary business goal is to
+        identify customers likely to churn.
+        Although the overall accuracy decreased to <b>49.47%</b>, the model
+        dramatically reduced False Negatives from <b>4,828</b> (Random Forest)
+        to just <b>733</b>.
+        In customer churn prediction, missing a real churn customer can lead
+        to direct revenue loss, whereas incorrectly flagging a loyal customer
+        only results in a minor retention cost.
+        Therefore, prioritizing Recall over Accuracy is a deliberate
+        business-aligned machine learning strategy.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -570,7 +641,6 @@ elif section == "🔮 Live Prediction":
             """, unsafe_allow_html=True)
 
         with rc2:
-            # Gauge chart
             fig = go.Figure(go.Indicator(
                 mode="gauge+number", value=prob * 100,
                 number=dict(suffix="%", font=dict(size=36, color=risk_color)),
@@ -579,11 +649,11 @@ elif section == "🔮 Live Prediction":
                     bar=dict(color=risk_color),
                     bgcolor="#1a1a1a",
                     steps=[
-                        dict(range=[0, 30], color="rgba(52,211,153,.15)"),
+                        dict(range=[0, 30],  color="rgba(52,211,153,.15)"),
                         dict(range=[30, 60], color="rgba(251,191,36,.15)"),
                         dict(range=[60, 100], color="rgba(248,113,113,.15)"),
                     ],
-                    threshold=dict(line=dict(color="white", width=2), thickness=0.8, value=prob*100)
+                    threshold=dict(line=dict(color="white", width=2), thickness=0.8, value=prob * 100)
                 )
             ))
             fig.update_layout(
@@ -592,7 +662,6 @@ elif section == "🔮 Live Prediction":
             )
             st.plotly_chart(fig, use_container_width=True)
 
-        # Quick recommendation
         if prob >= 0.6:
             st.error("⚠️ **Immediate intervention required** — Assign relationship manager and offer retention package.")
         elif prob >= 0.3:
@@ -614,13 +683,13 @@ elif section == "📌 Business Strategy":
     """, unsafe_allow_html=True)
 
     strategies = [
-        ("🟢", "Low Risk", "< 30%", "#34D399", "rgba(52,211,153,.08)",
+        ("🟢", "Low Risk",    "< 30%",  "#34D399", "rgba(52,211,153,.08)",
          ["Cross-sell premium products (FDs, Mutual Funds)", "Loyalty reward programs",
           "Encourage digital banking adoption", "Promote auto-pay & recurring deposits"]),
         ("🟡", "Medium Risk", "30–60%", "#FBBF24", "rgba(251,191,36,.08)",
          ["Personalized offers (fee waivers, cashback)", "Proactive support check-in calls",
           "Targeted product nudges based on history", "Short-term retention incentives"]),
-        ("🔴", "High Risk", "> 60%", "#F87171", "rgba(248,113,113,.08)",
+        ("🔴", "High Risk",   "> 60%",  "#F87171", "rgba(248,113,113,.08)",
          ["Immediate relationship manager intervention", "Exclusive fee waivers & rate benefits",
           "Custom win-back retention plans", "Priority grievance resolution & account audit"]),
     ]
@@ -628,7 +697,9 @@ elif section == "📌 Business Strategy":
     for icon, title, pct, color, bg, actions in strategies:
         st.markdown(f"""
         <div class="glass-card" style="border-left:3px solid {color};background:{bg};">
-            <h3 style="color:{color} !important;margin-top:0;">{icon} {title} Customers <span style="font-size:.85rem;font-weight:400;color:#94A3B8;">({pct} churn probability)</span></h3>
+            <h3 style="color:{color} !important;margin-top:0;">{icon} {title} Customers
+                <span style="font-size:.85rem;font-weight:400;color:#94A3B8;">({pct} churn probability)</span>
+            </h3>
             <ul style="color:#CBD5E1;margin-bottom:0;line-height:1.8;">
                 {''.join(f'<li>{a}</li>' for a in actions)}
             </ul>
@@ -639,9 +710,15 @@ elif section == "📌 Business Strategy":
     st.markdown('<div class="section-header"><span>💡</span> Key Business Insights</div>', unsafe_allow_html=True)
     ic1, ic2, ic3 = st.columns(3)
     insights = [
-        ("🔕 Dormancy Risk", "Inactive members with high balances are the #1 churn signal (45.6% feature importance).", "#F87171"),
-        ("📦 Complexity Risk", "Customers with 3+ products and low credit scores show account overload patterns.", "#FBBF24"),
-        ("🛡️ Retention Shield", "Active members have significantly lower churn — engagement is the best defense.", "#34D399"),
+        ("🔕 Dormancy Risk",
+         "Inactive members with high balances are the #1 churn signal (45.6% feature importance).",
+         "#F87171"),
+        ("📦 Complexity Risk",
+         "Customers with 3+ products and low credit scores show account overload patterns.",
+         "#FBBF24"),
+        ("🛡️ Retention Shield",
+         "Active members have significantly lower churn — engagement is the best defense.",
+         "#34D399"),
     ]
     for col, (title, desc, color) in zip([ic1, ic2, ic3], insights):
         with col:
@@ -658,7 +735,7 @@ elif section == "📌 Business Strategy":
 # ──────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="footer">
-    Built with ❤️ by <b style="color:#FBBF24;">Pooja Dhamale</b> · Python · XGBoost · Streamlit<br>
+    Built by <b style="color:#FBBF24;">Pooja Dhamale</b> · Python · XGBoost · Streamlit<br>
     <span style="font-size:.72rem;">End-to-End Machine Learning Project · 2026</span>
 </div>
 """, unsafe_allow_html=True)

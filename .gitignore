@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Streamlit
+.streamlit/
+
+# Project specific temp files
+nb_output.txt
+data_info.txt
+read_nb.py
+
+# Dataset (DO NOT TRACK)
+indian_bank_customer_churn_featured1.csv
