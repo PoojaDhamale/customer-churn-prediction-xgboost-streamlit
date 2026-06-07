@@ -28,4 +28,3 @@ This is a professional, end-to-end Machine Learning application designed to pred
 
 ### 👩‍💻 Author
 **Pooja Dhamale**  
-*Machine Learning & Data Science Specialist*
