@@ -264,7 +264,7 @@ if section == "🏠 Project Overview":
         </h1>
         <p style="color:#94A3B8;font-size:1.05rem;max-width:650px;margin:0 auto;">
             Predicting customer attrition using <b style="color:#FBBF24;">XGBoost</b> on 100K banking records
-            with engineered behavioral features — optimized for <b style="color:#34D399;">90% Recall</b>.
+            with engineered behavioral features — optimized for <b style="color:#34D399;">67% Recall</b>.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -280,7 +280,7 @@ if section == "🏠 Project Overview":
         ("👥", "Total Customers", f"{total:,}", "100K records"),
         ("❌", "Churned", f"{churned:,}", f"{churn_rate:.1f}% attrition"),
         ("✅", "Retained", f"{retained:,}", f"{100-churn_rate:.1f}% retained"),
-        ("🎯", "Model Recall", "90.3%", "Churn class (threshold 0.3)"),
+        ("🎯", "Model Recall", "67.4%", "Churn class (threshold 0.45)"),
     ]
     for col, (icon, label, value, sub) in zip([c1, c2, c3, c4], kpis):
         with col:
@@ -520,25 +520,25 @@ elif section == "⚙️ ML Pipeline":
             <div class="metric-row">
                 <div class="metric-badge">
                     <span class="label">Recall</span>
-                    <span class="value" style="color:#34D399;">90%</span>
+                    <span class="value" style="color:#34D399;">67%</span>
                 </div>
                 <div class="metric-badge">
                     <span class="label">Precision</span>
-                    <span class="value">42%</span>
+                    <span class="value">50%</span>
                 </div>
             </div>
             <div class="metric-row" style="margin-top:10px;">
                 <div class="metric-badge">
                     <span class="label">Accuracy</span>
-                    <span class="value">49.47%</span>
+                    <span class="value">61.89%</span>
                 </div>
                 <div class="metric-badge">
                     <span class="label">F1-Score</span>
-                    <span class="value">58%</span>
+                    <span class="value">57%</span>
                 </div>
             </div>
             <p style="color:#34D399;font-size:.82rem;margin-bottom:0;">
-                ✅ Successfully detected 6,845 out of 7,578 churn customers
+                ✅ Successfully detected 5,106 out of 7,578 churn customers
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -553,8 +553,8 @@ elif section == "⚙️ ML Pipeline":
         )
 
         cm = np.array([
-            [3049, 9373],
-            [733,  6845]
+            [7272, 5150],
+            [2472,  5106]
         ])
 
         fig = go.Figure(data=go.Heatmap(
@@ -609,11 +609,11 @@ elif section == "⚙️ ML Pipeline":
         <h4 style="color:#34D399 !important;margin-top:0;">💡 Business-Oriented Model Selection</h4>
         <p style="color:#CBD5E1;margin-bottom:0;line-height:1.7;">
         The final XGBoost model was intentionally optimized for
-        <b>high Recall (90%)</b> because the primary business goal is to
+        <b>high Recall (67%)</b> because the primary business goal is to
         identify customers likely to churn.
-        Although the overall accuracy decreased to <b>49.47%</b>, the model
-        dramatically reduced False Negatives from <b>4,828</b> (Random Forest)
-        to just <b>733</b>.
+        Although the overall accuracy decreased to <b>61.89%</b>, the model
+        reduced False Negatives from <b>4,828</b> (Random Forest)
+        to <b>2,472</b>.
         In customer churn prediction, missing a real churn customer can lead
         to direct revenue loss, whereas incorrectly flagging a loyal customer
         only results in a minor retention cost.
@@ -683,8 +683,8 @@ elif section == "🔮 Live Prediction":
         X_final = pd.DataFrame(np.concatenate([X_num, X_cat], axis=1), columns=feature_names)
 
         prob = model.predict_proba(X_final)[0][1]
-        risk = "🔴 HIGH RISK" if prob >= 0.6 else ("🟡 MEDIUM RISK" if prob >= 0.3 else "🟢 LOW RISK")
-        risk_color = "#F87171" if prob >= 0.6 else ("#FBBF24" if prob >= 0.3 else "#34D399")
+        risk = "🔴 HIGH RISK" if prob >= 0.6 else ("🟡 MEDIUM RISK" if prob >= 0.45 else "🟢 LOW RISK")
+        risk_color = "#F87171" if prob >= 0.6 else ("#FBBF24" if prob >= 0.45 else "#34D399")
 
         rc1, rc2 = st.columns([1, 2])
         with rc1:
@@ -720,7 +720,7 @@ elif section == "🔮 Live Prediction":
 
         if prob >= 0.6:
             st.error("⚠️ **Immediate intervention required** — Assign relationship manager and offer retention package.")
-        elif prob >= 0.3:
+        elif prob >= 0.45:
             st.warning("📌 **Monitor closely** — Proactive engagement and personalized offers recommended.")
         else:
             st.success("✅ **Stable customer** — Focus on cross-selling and loyalty programs.")
@@ -739,10 +739,10 @@ elif section == "📌 Business Strategy":
     """, unsafe_allow_html=True)
 
     strategies = [
-        ("🟢", "Low Risk",    "< 30%",  "#34D399", "rgba(52,211,153,.08)",
+        ("🟢", "Low Risk",    "< 45%",  "#34D399", "rgba(52,211,153,.08)",
          ["Cross-sell premium products (FDs, Mutual Funds)", "Loyalty reward programs",
           "Encourage digital banking adoption", "Promote auto-pay & recurring deposits"]),
-        ("🟡", "Medium Risk", "30–60%", "#FBBF24", "rgba(251,191,36,.08)",
+        ("🟡", "Medium Risk", "45–60%", "#FBBF24", "rgba(251,191,36,.08)",
          ["Personalized offers (fee waivers, cashback)", "Proactive support check-in calls",
           "Targeted product nudges based on history", "Short-term retention incentives"]),
         ("🔴", "High Risk",   "> 60%",  "#F87171", "rgba(248,113,113,.08)",
