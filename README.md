@@ -1,4 +1,4 @@
-# 🏦Customer Churn Prediction System
+# 🏦 Customer Churn Prediction System
 
 ### 🔗 [LIVE DEMO - VIEW PROJECT](https://bank-customer-churn-prediction-p9iabpwp37pksd6fdpnjie.streamlit.app/)
 
@@ -13,8 +13,8 @@ This is a professional, end-to-end Machine Learning application designed to pred
 - **Premium UI/UX:** Single-page dashboard with sidebar navigation, glassmorphism, and custom CSS.
 - **Realistic Dataset:** Modeled after Indian banking customer behaviors and demographics (100K records).
 - **Advanced Engineering:** Domain-specific features like *Balance-to-Salary ratio* and *High-Balance-Low-Activity* flags.
-- **Optimized XGBoost Model:** Fine-tuned via `RandomizedSearchCV` to prioritize **Recall (90.3%)**, ensuring high-risk churners are identified.
-- **Actionable Insights:** Translates ML predictions into tiered business retention strategies.
+- **Optimized XGBoost Model:** Fine-tuned via `RandomizedSearchCV` and calibrated to a `0.45` decision threshold to achieve a commercially viable balance of **67.4% Recall** and **50.0% Precision**.
+- **Actionable Insights:** Translates ML predictions into tiered business retention strategies to minimize marketing budget waste while protecting bank revenue.
 
 ---
 
@@ -27,4 +27,4 @@ This is a professional, end-to-end Machine Learning application designed to pred
 ---
 
 ### 👩‍💻 Author
-**Pooja Dhamale**  
+**Pooja Dhamale**
