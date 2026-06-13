@@ -766,15 +766,15 @@ elif section == "📌 Business Strategy":
     st.markdown('<div class="section-header"><span>💡</span> Key Business Insights</div>', unsafe_allow_html=True)
     ic1, ic2, ic3 = st.columns(3)
     insights = [
+        ("🛡️ Activity is Key",
+         "Active membership status is the #1 predictor of customer churn or retention (49.3% feature importance).",
+         "#34D399"),
         ("🔕 Dormancy Risk",
-         "Inactive members with high balances are the #1 churn signal (45.6% feature importance).",
+         "Inactive members with high balances remain a critical churn signal as the #2 predictor (27.8% feature importance).",
          "#F87171"),
         ("📦 Complexity Risk",
-         "Customers with 3+ products and low credit scores show account overload patterns.",
+         "Customers with higher product counts also show an increased likelihood of churn.",
          "#FBBF24"),
-        ("🛡️ Retention Shield",
-         "Active members have significantly lower churn — engagement is the best defense.",
-         "#34D399"),
     ]
     for col, (title, desc, color) in zip([ic1, ic2, ic3], insights):
         with col:
